@@ -1,5 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts'
-import { lastNDays, todayKey, formatDayLabel } from '../utils/dates'
+import ProgressBar from '../components/ProgressBar'
+import { currentZoneIndex, lastNDays, todayKey, weekKey, formatDayLabel } from '../utils/dates'
 
 export default function Progress({ data }) {
   const { history, zones, hotspots, decluttering } = data
@@ -15,6 +16,14 @@ export default function Progress({ data }) {
   })
 
   const hotspotsResolvedTotal = hotspots.reduce((sum, s) => sum + s.timesResolved, 0)
+
+  const wk = weekKey()
+  const activeZoneIndex = currentZoneIndex(zones.length)
+  const zoneProgress = zones.map((z, idx) => {
+    const completed = z.completedWeek === wk ? z.completedTasks.length : 0
+    const pct = z.tasks.length ? (completed / z.tasks.length) * 100 : 0
+    return { id: z.id, name: z.name, pct, isActive: idx === activeZoneIndex }
+  })
 
   return (
     <div className="space-y-6">
@@ -41,6 +50,28 @@ export default function Progress({ data }) {
               <Bar dataKey="Noite" fill="#7dd3c0" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <h3 className="font-semibold text-slate-800 mb-4">Zonas desta semana</h3>
+        <div className="space-y-3">
+          {zoneProgress.map((z) => (
+            <div key={z.id}>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm text-slate-700 flex items-center gap-1.5">
+                  {z.name}
+                  {z.isActive && (
+                    <span className="text-[10px] font-medium bg-teal-100 text-teal-700 px-1.5 py-0.5 rounded-full">
+                      semana
+                    </span>
+                  )}
+                </span>
+                <span className="text-xs text-slate-400">{Math.round(z.pct)}%</span>
+              </div>
+              <ProgressBar pct={z.pct} />
+            </div>
+          ))}
         </div>
       </div>
 
