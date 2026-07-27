@@ -20,7 +20,7 @@ export default function ChecklistItem({ label, checked, onToggle, onDelete }) {
         <button
           type="button"
           onClick={onDelete}
-          className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 text-sm transition"
+          className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 text-slate-300 hover:text-red-500 text-sm transition"
           title="Remover"
         >
           ✕

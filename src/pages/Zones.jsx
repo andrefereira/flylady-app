@@ -11,12 +11,13 @@ export default function Zones({ data, update }) {
 
   const [selectedIndex, setSelectedIndex] = useState(activeIndex)
   const [newTaskLabel, setNewTaskLabel] = useState({})
+  const [newZoneName, setNewZoneName] = useState('')
 
   const zone = zones[selectedIndex]
   const isActive = selectedIndex === activeIndex
   const isCurrentWeek = zone.completedWeek === wk
   const completed = isCurrentWeek ? zone.completedTasks : []
-  const pct = (completed.length / zone.tasks.length) * 100
+  const pct = zone.tasks.length ? (completed.length / zone.tasks.length) * 100 : 0
 
   function toggleTask(taskId) {
     const newZones = zones.map((z, idx) => {
@@ -76,6 +77,33 @@ export default function Zones({ data, update }) {
     update({ zones: newZones })
   }
 
+  const isDefaultZone = defaultZones.some((z) => z.id === zone.id)
+
+  function addZone() {
+    const name = newZoneName.trim()
+    if (!name) return
+    const newZone = {
+      id: `zone-${Date.now()}`,
+      name,
+      tasks: [],
+      completedWeek: null,
+      completedTasks: [],
+      lastCleaned: null,
+    }
+    const newZones = [...zones, newZone]
+    update({ zones: newZones })
+    setNewZoneName('')
+    setSelectedIndex(newZones.length - 1)
+  }
+
+  function removeZone() {
+    if (zones.length <= 1) return
+    if (!window.confirm(`Remover a zona "${zone.name}"? Essa ação não pode ser desfeita.`)) return
+    const newZones = zones.filter((_, idx) => idx !== selectedIndex)
+    update({ zones: newZones })
+    setSelectedIndex((idx) => Math.max(0, Math.min(idx, newZones.length - 1)))
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -102,6 +130,27 @@ export default function Zones({ data, update }) {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="flex gap-2">
+        <input
+          value={newZoneName}
+          onChange={(e) => setNewZoneName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              addZone()
+            }
+          }}
+          placeholder="Nova zona (ex: Garagem)"
+          className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+        />
+        <button
+          onClick={addZone}
+          className="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition whitespace-nowrap"
+        >
+          Adicionar zona
+        </button>
       </div>
 
       <div
@@ -162,12 +211,26 @@ export default function Zones({ data, update }) {
           </button>
         </div>
 
-        <button
-          onClick={restoreDefaults}
-          className="mt-3 text-xs text-slate-400 hover:text-teal-600 transition"
-        >
-          Restaurar tarefas padrão desta zona
-        </button>
+        <div className="flex items-center justify-between mt-3">
+          {isDefaultZone ? (
+            <button
+              onClick={restoreDefaults}
+              className="text-xs text-slate-400 hover:text-teal-600 transition"
+            >
+              Restaurar tarefas padrão desta zona
+            </button>
+          ) : (
+            <span />
+          )}
+          {zones.length > 1 && (
+            <button
+              onClick={removeZone}
+              className="text-xs text-slate-400 hover:text-red-600 transition"
+            >
+              Remover esta zona
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
