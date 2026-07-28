@@ -133,6 +133,10 @@ const defaultState = {
     notes: '',
     customChecklist: [],
   },
+  babySteps: {
+    startDate: null,
+    doneDays: {},
+  },
   history: [],
 }
 

@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 const tabs = [
+  { to: '/baby-steps', label: 'Baby Steps', icon: '👶' },
   { to: '/zonas', label: 'Zonas', icon: '🏠' },
   { to: '/rotinas', label: 'Rotinas', icon: '☀️' },
   { to: '/hotspots', label: 'Hot Spots', icon: '🔥' },
