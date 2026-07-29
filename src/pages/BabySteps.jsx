@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ProgressBar from '../components/ProgressBar'
 import { todayKey } from '../utils/dates'
-import { TOTAL_DAYS, coreHabits, getCurrentDay, getDayInfo } from '../utils/babySteps'
+import { TOTAL_DAYS, getCurrentDay, getDayInfo } from '../utils/babySteps'
 
 export default function BabySteps({ data, update }) {
   const babySteps = data.babySteps || { startDate: null, doneDays: {} }
@@ -49,16 +49,6 @@ export default function BabySteps({ data, update }) {
             dia, no seu ritmo, sem tentar arrumar a casa toda de uma vez. A cada dia um
             novo passo é liberado aqui no app.
           </p>
-          <div className="bg-teal-50 border border-teal-100 rounded-lg p-4">
-            <p className="text-sm font-medium text-teal-800 mb-2">
-              Se você esquecer tudo, foque só nestes 3:
-            </p>
-            <ul className="text-sm text-teal-800 space-y-1 list-disc list-inside">
-              {coreHabits.map((h) => (
-                <li key={h}>{h}</li>
-              ))}
-            </ul>
-          </div>
           <button
             onClick={start}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg py-2.5 transition"
@@ -116,17 +106,6 @@ export default function BabySteps({ data, update }) {
           lembretes.
         </p>
       )}
-
-      <div className="bg-teal-50 border border-teal-100 rounded-xl p-4">
-        <p className="text-sm font-medium text-teal-800 mb-2">
-          Se você esquecer tudo, foque só nestes 3:
-        </p>
-        <ul className="text-sm text-teal-800 space-y-1 list-disc list-inside">
-          {coreHabits.map((h) => (
-            <li key={h}>{h}</li>
-          ))}
-        </ul>
-      </div>
 
       <DayCard
         info={today}

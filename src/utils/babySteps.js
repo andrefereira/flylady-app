@@ -81,12 +81,6 @@ export const babyStepsContent = [
   },
 ]
 
-export const coreHabits = [
-  'Brilhar a pia todas as noites',
-  'Vestir-se e calçar sapatos logo ao acordar',
-  'Cronometrar 15 minutos de destralhe diário',
-]
-
 // Calcula o dia atual do programa (1 a 31) a partir da data de início.
 export function getCurrentDay(startDate) {
   if (!startDate) return 1
