@@ -117,3 +117,26 @@ export function getDayInfo(day) {
     learnedSoFar,
   }
 }
+
+// Verdadeiro só quando os 31 dias foram marcados como feitos.
+export function isProgramFullyCompleted(babySteps) {
+  const doneDays = babySteps?.doneDays || {}
+  for (let d = 1; d <= TOTAL_DAYS; d++) {
+    if (!doneDays[d]) return false
+  }
+  return true
+}
+
+// Hábitos de rotina podem ficar amarrados a um dia dos Baby Steps via
+// `task.unlockDay`. Sem essa propriedade (tarefas criadas pelo usuário,
+// por exemplo), o hábito fica sempre liberado.
+export function isRoutineTaskUnlocked(task, babySteps) {
+  if (task.unlockDay == null) return true
+  if (task.unlockDay > TOTAL_DAYS) return isProgramFullyCompleted(babySteps)
+  return getCurrentDay(babySteps?.startDate) >= task.unlockDay
+}
+
+export function routineUnlockLabel(task) {
+  if (task.unlockDay > TOTAL_DAYS) return 'Libera ao concluir os 31 Baby Steps'
+  return `Libera no Dia ${task.unlockDay} dos Baby Steps`
+}

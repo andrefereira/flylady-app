@@ -104,20 +104,28 @@ export const defaultZones = [
 
 const defaultState = {
   zones: defaultZones,
+  // unlockDay liga o hábito a um dia dos Baby Steps (aba Baby Steps): só
+  // aparece marcável quando a pessoa chega naquele dia do programa. Um
+  // unlockDay maior que o total de dias (31) significa "libera só depois
+  // de concluir todos os Baby Steps". Tarefas sem unlockDay (inclusive as
+  // que o usuário adiciona à mão) ficam sempre liberadas.
   routines: {
     morning: [
-      { id: 'm1', label: 'Arrumar a cama' },
-      { id: 'm2', label: 'Brilhar a pia da cozinha ✨' },
-      { id: 'm3', label: 'Vestir-se e calçar sapatos' },
-      { id: 'm4', label: 'Planejar o jantar' },
-      { id: 'm5', label: 'Checar a agenda do dia' },
+      { id: 'm2', label: 'Brilhar a pia da cozinha ✨', unlockDay: 1 },
+      { id: 'm3', label: 'Vestir-se e calçar sapatos', unlockDay: 2 },
+      { id: 'm5', label: 'Checar a agenda do dia', unlockDay: 11 },
+      { id: 'm6', label: 'Lavar, estender e guardar uma carga de roupa', unlockDay: 20 },
+      { id: 'm7', label: 'Beber água e cuidar da alimentação hoje', unlockDay: 28 },
+      { id: 'm1', label: 'Arrumar a cama', unlockDay: 32 },
+      { id: 'm4', label: 'Planejar o jantar', unlockDay: 32 },
     ],
     evening: [
-      { id: 'e1', label: 'Lavar a louça / esvaziar a lava-louças' },
-      { id: 'e2', label: 'Brilhar a pia novamente ✨' },
-      { id: 'e3', label: 'Separar a roupa de amanhã' },
-      { id: 'e4', label: 'Arrumar a sala por 5 minutos' },
-      { id: 'e5', label: 'Preparar bolsa/materiais do dia seguinte' },
+      { id: 'e2', label: 'Brilhar a pia novamente ✨', unlockDay: 1 },
+      { id: 'e3', label: 'Separar a roupa de amanhã', unlockDay: 11 },
+      { id: 'e6', label: 'Ir para a cama no horário combinado', unlockDay: 17 },
+      { id: 'e1', label: 'Lavar a louça / esvaziar a lava-louças', unlockDay: 32 },
+      { id: 'e4', label: 'Arrumar a sala por 5 minutos', unlockDay: 32 },
+      { id: 'e5', label: 'Preparar bolsa/materiais do dia seguinte', unlockDay: 32 },
     ],
     morningDone: {},
     eveningDone: {},
