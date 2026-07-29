@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { doc, onSnapshot, setDoc } from 'firebase/firestore'
 import { db } from '../firebase'
-import defaultState from '../utils/defaultState'
+import defaultState, { migrateData } from '../utils/defaultState'
 
 // Sincroniza um único documento Firestore (users/{uid}) com o estado do
 // app. Toda a "casa" do usuário fica guardada nesse documento único,
@@ -20,7 +20,12 @@ export function useUserData(uid) {
     const ref = doc(db, 'users', uid)
     const unsub = onSnapshot(ref, async (snap) => {
       if (snap.exists()) {
-        setData(snap.data())
+        const raw = snap.data()
+        const migrated = migrateData(raw)
+        setData(migrated)
+        if (JSON.stringify(migrated) !== JSON.stringify(raw)) {
+          await setDoc(ref, migrated, { merge: true })
+        }
       } else {
         await setDoc(ref, defaultState)
         setData(defaultState)

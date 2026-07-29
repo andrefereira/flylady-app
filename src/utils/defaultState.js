@@ -149,3 +149,35 @@ const defaultState = {
 }
 
 export default defaultState
+
+// Preenche, em contas já existentes, campos criados em versões mais novas
+// do app (ex: babySteps) e atualiza os hábitos de rotina padrão com o
+// unlockDay/novos itens — sem reviver tarefas padrão que a pessoa já tinha
+// apagado, e sem mexer nas tarefas que ela criou.
+// Tarefas padrão introduzidas junto com o unlockDay (dias 17, 20 e 28 dos
+// Baby Steps). Só essas são adicionadas automaticamente em contas
+// existentes — as demais, se não estiverem lá, é porque a pessoa apagou.
+const NEW_ROUTINE_TASK_IDS = new Set(['m6', 'm7', 'e6'])
+
+function mergeRoutineTasks(existingTasks, defaultTasks) {
+  const byId = new Map(defaultTasks.map((t) => [t.id, t]))
+  const merged = existingTasks.map((t) => (byId.has(t.id) ? { ...t, unlockDay: byId.get(t.id).unlockDay } : t))
+  const existingIds = new Set(existingTasks.map((t) => t.id))
+  const newDefaults = defaultTasks.filter((t) => NEW_ROUTINE_TASK_IDS.has(t.id) && !existingIds.has(t.id))
+  return [...merged, ...newDefaults]
+}
+
+export function migrateData(data) {
+  const migrated = { ...data }
+  if (!migrated.babySteps) {
+    migrated.babySteps = { startDate: null, doneDays: {} }
+  }
+  if (migrated.routines) {
+    migrated.routines = {
+      ...migrated.routines,
+      morning: mergeRoutineTasks(migrated.routines.morning || [], defaultState.routines.morning),
+      evening: mergeRoutineTasks(migrated.routines.evening || [], defaultState.routines.evening),
+    }
+  }
+  return migrated
+}
