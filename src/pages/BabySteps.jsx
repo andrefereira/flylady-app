@@ -114,11 +114,7 @@ export default function BabySteps({ data, update }) {
         onToggle={() => toggleDay(currentDay)}
       />
 
-      {!isFinished && (
-        <p className="text-xs text-slate-400 text-center">
-          🔒 O passo do Dia {Math.min(currentDay + 1, TOTAL_DAYS)} é liberado amanhã.
-        </p>
-      )}
+      {!isFinished && <DayCard info={getDayInfo(currentDay + 1)} locked />}
 
       {history.length > 0 && (
         <div>
@@ -146,30 +142,41 @@ export default function BabySteps({ data, update }) {
   )
 }
 
-function DayCard({ info, done, onToggle, highlighted }) {
+function DayCard({ info, done, onToggle, highlighted, locked }) {
   return (
     <div
       className={`bg-white rounded-xl border p-4 ${
         highlighted ? 'border-teal-400 ring-1 ring-teal-200' : 'border-slate-200'
-      }`}
+      } ${locked ? 'opacity-50' : ''}`}
     >
       <div className="flex items-start gap-3">
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-pressed={done}
-          className={`flex-shrink-0 w-6 h-6 mt-0.5 rounded-md border-2 flex items-center justify-center transition ${
-            done ? 'bg-teal-600 border-teal-600 text-white' : 'border-slate-300 hover:border-teal-400'
-          }`}
-        >
-          {done && '✓'}
-        </button>
+        {locked ? (
+          <span className="flex-shrink-0 w-6 h-6 mt-0.5 rounded-md border-2 border-slate-200 flex items-center justify-center text-slate-300 text-xs">
+            🔒
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-pressed={done}
+            className={`flex-shrink-0 w-6 h-6 mt-0.5 rounded-md border-2 flex items-center justify-center transition ${
+              done ? 'bg-teal-600 border-teal-600 text-white' : 'border-slate-300 hover:border-teal-400'
+            }`}
+          >
+            {done && '✓'}
+          </button>
+        )}
         <div className="flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-medium text-slate-400">Dia {info.day}</span>
             {highlighted && (
               <span className="text-[11px] font-medium bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">
                 Hoje
+              </span>
+            )}
+            {locked && (
+              <span className="text-[11px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
+                Amanhã
               </span>
             )}
           </div>
